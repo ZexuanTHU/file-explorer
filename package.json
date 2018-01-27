@@ -2,5 +2,13 @@
     "name": "file-explorer",
     "version": "1.0.0",
     "description": "A command-line file explorer",
-    "license": "MIT"
+    "license": "MIT",
+    "devDependencies": {
+        "cz-conventional-changelog": "^2.1.0"
+    },
+    "config": {
+        "commitizen": {
+            "path": "./node_modules/cz-conventional-changelog"
+        }
+    }
 }
