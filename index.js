@@ -10,22 +10,23 @@ var fs = require('fs'),
  * main function
  */
 
-// called for each file walked in the directory
-var stats = []
 
-fs.readdir(__dirname, function (err, files) {
+fs.readdir(process.cwd(), function (err, files) {
     console.log('')
 
     if (!files.length) {
         return console.log('    \033[31m No files to show!033[39m\n')
     }
-    
+
     console.log('   Select which file or directory you want to see\n')
 
+    var stats = []
+
+    // called for each file walked in the directory
     function file(i) {
         var filename = files[i]
 
-        fs.stat(__dirname + '/' + filename, function (err, stat) {
+        fs.stat(process.cwd() + '/' + filename, function (err, stat) {
             stats[i] = stat
 
             if (stat.isDirectory()) {
@@ -54,26 +55,38 @@ fs.readdir(__dirname, function (err, files) {
 
     // called with the option supplied by the user
     function option(data) {
-        if (!files[Number(data)]) {
+        var filename = files[Number(data)]
+
+        if (!filename) {
             stdout.write('  \033[31mEnter your choice:  \033[39m')
         } else {
             stdin.pause()
 
             if (stats[Number(data)].isDirectory()) {
-                fs.readdir(__dirname + '/' + filename, function (err, files) {
+                fs.readdir(process.cwd() + '/' + filename, function (err, files) {
                     console.log('')
-                    console.log(' (' + files.length + ' files)')
-                });
-                console.log('')
-            } else {
-                fs.readFile(__dirname + '/' + filename, 'utf8' + function (err, data) {
+                    console.log('   (' + files.length + ' files)')
+                    files.forEach(function (file) {
+                        console.log('   -  ' + file)
+                    })
+                    console.log('')
 
+                    exit()
+                })
+            } else {
+                fs.readFile(process.cwd() + '/' + filename, 'utf8', function (err, data) {
                     console.log('')
-                    console.log('\033[90m' + data.replace(/(.*)/g, '        $1') + '\033[39m')
+                    console.log('\033[90m' + data.replace(/(.*)/g, '    $1') + '\033[39m')
+
+                    exit()
                 })
             }
         }
+    }
 
+    function exit() {
+        console.log('Exit...')
+        process.exit(0)
     }
 
     file(0)
