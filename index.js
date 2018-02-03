@@ -10,7 +10,6 @@ var fs = require('fs'),
  * main function
  */
 
-
 fs.readdir(process.cwd(), function (err, files) {
     console.log('');
 
